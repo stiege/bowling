@@ -11,8 +11,7 @@
 #define ROLL_FIRST_ELEMENT FIRST_ELEMENT
 #define FRAME_FIRST_ELEMENT FIRST_ELEMENT
 #define CARD_FIRST_ELEMENT FIRST_ELEMENT
-
-#define NEXT_AFTER(a) (a+1)
+#define ROLLS_PER_FRAME 2
 
 
 static int rollInFrame;
@@ -32,7 +31,7 @@ static void progressToNextFrame(void);
 static bool frameIsComplete(void);
 static void markScoreCardForRoll(int pins);
 static void markScoreCardForFrameResult(int pins);
-static char integerToAscii(int val);
+static char pinsToChar(int val);
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
 
@@ -72,12 +71,12 @@ static void progressToNextFrame(void)
 
 static bool frameIsComplete(void)
 {
-    return ( NEXT_AFTER(ROLL_FIRST_ELEMENT+1) == rollInFrame);
+    return ( (ROLL_FIRST_ELEMENT + ROLLS_PER_FRAME) == rollInFrame);
 }
 
 static void markScoreCardForRoll(int pins)
 {
-    currentCard[getReportCardRollOffset()] = integerToAscii(pins);
+    currentCard[getReportCardRollOffset()] = pinsToChar(pins);
 }
 
 static void resetCard(void)
@@ -88,7 +87,7 @@ static void resetCard(void)
     sprintf(currentCard, "%s", blankCard);
 }
 
-static char integerToAscii(int val)
+static char pinsToChar(int val)
 {
     return (val + 0x30);
 }
@@ -108,7 +107,7 @@ static int getReportCardRollOffset()
 static void markScoreCardForFrameResult(int pins)
 {
     int frameScore = pins + lastResult;
-    currentCard[getReportCardFrameResultOffset()] = integerToAscii(frameScore);
+    currentCard[getReportCardFrameResultOffset()] = pinsToChar(frameScore);
 }
 
 static int getReportCardFrameResultOffset(void)
