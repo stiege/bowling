@@ -13,10 +13,8 @@
 #define CARD_FIRST_ELEMENT FIRST_ELEMENT
 #define ROLLS_PER_FRAME 2
 
-
 static int rollInFrame;
 static int frameNumber;
-static int frameResult[2];
 static int lastResult;
 
 
