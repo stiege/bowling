@@ -13,10 +13,21 @@
 #define CARD_FIRST_ELEMENT FIRST_ELEMENT
 #define ROLLS_PER_FRAME 2
 
-static int rollInFrame;
-static int frameNumber;
-static int lastResult;
+static struct tScoreCardState
+{
+    int rollInFrame;
+    int frameNumber;
+    int lastResult;
+    int lastFrameScore;
+}scoreCardState;
 
+static const struct tScoreCardState cardInitState = 
+{
+    .rollInFrame = ROLL_FIRST_ELEMENT,
+    .frameNumber = FRAME_FIRST_ELEMENT,
+    .lastResult = 0,
+    .lastFrameScore = 0
+};
 
 static const char blankCard[] = 
 "|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
@@ -47,7 +58,7 @@ void SCRNG_Roll(int pins)
 {
 
     markScoreCardForRoll(pins);
-    rollInFrame++;
+    scoreCardState.rollInFrame++;
 
     if ( frameIsComplete() )
     {
@@ -55,19 +66,19 @@ void SCRNG_Roll(int pins)
         progressToNextFrame();
     }
 
-    lastResult = pins;
+    scoreCardState.lastResult = pins;
 
 }
 
 static void progressToNextFrame(void)
 {
-    frameNumber++;
-    rollInFrame = ROLL_FIRST_ELEMENT;
+    scoreCardState.frameNumber++;
+    scoreCardState.rollInFrame = ROLL_FIRST_ELEMENT;
 }
 
 static bool frameIsComplete(void)
 {
-    return ( (ROLL_FIRST_ELEMENT + ROLLS_PER_FRAME) == rollInFrame);
+    return ( (ROLL_FIRST_ELEMENT + ROLLS_PER_FRAME) == scoreCardState.rollInFrame);
 }
 
 static void markScoreCardForRoll(int pins)
@@ -77,9 +88,7 @@ static void markScoreCardForRoll(int pins)
 
 static void resetCard(void)
 {
-    lastResult = 0;
-    rollInFrame = ROLL_FIRST_ELEMENT;
-    frameNumber = FRAME_FIRST_ELEMENT;
+    scoreCardState = cardInitState;
     sprintf(currentCard, "%s", blankCard);
 }
 
@@ -93,23 +102,23 @@ static int getReportCardRollOffset()
 {
     int offset = SIZE_OF_ROLL_SLOTS / 2 ; //offset of first roll
     //offset for additional roll
-    offset += (rollInFrame - ROLL_FIRST_ELEMENT) * SIZE_OF_ROLL_SLOTS;
+    offset += (scoreCardState.rollInFrame - ROLL_FIRST_ELEMENT) * SIZE_OF_ROLL_SLOTS;
     //offset for frame
-    offset += (frameNumber - FRAME_FIRST_ELEMENT) * SIZE_OF_FRAME;
+    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT) * SIZE_OF_FRAME;
 
     return offset;
 }
 
 static void markScoreCardForFrameResult(int pins)
 {
-    int frameScore = pins + lastResult;
+    int frameScore = pins + scoreCardState.lastResult;
     currentCard[getReportCardFrameResultOffset()] = pinsToChar(frameScore);
 }
 
 static int getReportCardFrameResultOffset(void)
 {
     int offset = sizeof(blankCard)/2;
-    offset += (frameNumber - FRAME_FIRST_ELEMENT + 1) * SIZE_OF_FRAME/2;
+    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT + 1) * SIZE_OF_FRAME/2;
 
     return offset;
 }

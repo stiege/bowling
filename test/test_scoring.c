@@ -28,12 +28,22 @@ void test_drawShortGame(void)
 {
     SCRNG_Roll(6);
     SCRNG_Roll(2);
-    SCRNG_Roll(4);
+    SCRNG_Roll(1);
     char expectedString[] = 
-"| 6 | 2 | 4 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"| 6 | 2 | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |       |       |       |       |       |       |       |       |       |\n";
     expectedScoreCard(expectedString);
 
+}
+
+void test_RollSecondFrame(void)
+{
+    test_drawShortGame();
+    SCRNG_Roll(0);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |       |       |       |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
 }
 
 static void expectedScoreCard(char* string)
