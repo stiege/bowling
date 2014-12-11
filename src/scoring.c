@@ -33,8 +33,6 @@ static char pinsToChar(int val);
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
 
-
-
 void SCRNG_Init( void )
 {
     resetCard();

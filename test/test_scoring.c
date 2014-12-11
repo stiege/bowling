@@ -1,6 +1,6 @@
 #include "unity.h"
 #include "scoring.h"
-
+#include "string.h"
 #define SAME_STRING 0
 
 char scoreCard[200] = {0};
@@ -21,7 +21,6 @@ void test_drawEmptyScoreCard(void)
     char expectedString[] = 
 "|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|       |       |       |       |       |       |       |       |       |       |\n";
-    printf("\nBlank card");
     expectedScoreCard(expectedString);
 }
 
@@ -33,7 +32,6 @@ void test_drawShortGame(void)
     char expectedString[] = 
 "| 6 | 2 | 4 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |       |       |       |       |       |       |       |       |       |\n";
-    printf("\n6,2,4");
     expectedScoreCard(expectedString);
 
 }
@@ -41,7 +39,14 @@ void test_drawShortGame(void)
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);
-    printf("\n%s", scoreCard);
-    TEST_ASSERT_MESSAGE( SAME_STRING == strcmp(score_ptr,string),
-    "Did not get expected scorecard." );
+    if (SAME_STRING != strcmp(score_ptr,string))
+    {
+        char failMessage[2 * sizeof(scoreCard)];
+        sprintf(failMessage, "\nExpected:\n");
+        strcat(failMessage, string);
+        strcat(failMessage, "\nReceived:\n");
+        strcat(failMessage, scoreCard);
+        printf( "%s", failMessage );
+        TEST_FAIL();
+    }
 }
