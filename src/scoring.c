@@ -66,7 +66,7 @@ void SCRNG_Roll(int pins)
 static void progressToNextFrame(void)
 {
     frameNumber++;
-    rollInFrame = FIRST_ELEMENT;
+    rollInFrame = ROLL_FIRST_ELEMENT;
 }
 
 static bool frameIsComplete(void)
