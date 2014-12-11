@@ -19,6 +19,7 @@ static struct tScoreCardState
     int frameNumber;
     int lastResult;
     int lastFrameScore;
+    int thisScore;
 }scoreCardState;
 
 static const struct tScoreCardState cardInitState = 
@@ -26,7 +27,8 @@ static const struct tScoreCardState cardInitState =
     .rollInFrame = ROLL_FIRST_ELEMENT,
     .frameNumber = FRAME_FIRST_ELEMENT,
     .lastResult = 0,
-    .lastFrameScore = 0
+    .lastFrameScore = 0,
+    .thisScore = 0
 };
 
 static const char blankCard[] = 
@@ -38,8 +40,8 @@ static char currentCard[sizeof(blankCard)];
 static void resetCard(void);
 static void progressToNextFrame(void);
 static bool frameIsComplete(void);
-static void markScoreCardForRoll(int pins);
-static void markScoreCardForFrameResult(int pins);
+static void markScoreCardForRoll(int);
+static void markScoreCardForFrameResult(void);
 static char pinsToChar(int val);
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
@@ -62,11 +64,11 @@ void SCRNG_Roll(int pins)
 
     if ( frameIsComplete() )
     {
-        markScoreCardForFrameResult(pins);
+        markScoreCardForFrameResult();
         progressToNextFrame();
     }
 
-    scoreCardState.lastResult = pins;
+    scoreCardState.lastResult = scoreCardState.thisScore;
 
 }
 
@@ -74,6 +76,10 @@ static void progressToNextFrame(void)
 {
     scoreCardState.frameNumber++;
     scoreCardState.rollInFrame = ROLL_FIRST_ELEMENT;
+
+    scoreCardState.lastFrameScore = 
+        scoreCardState.lastResult
+        + scoreCardState.thisScore;
 }
 
 static bool frameIsComplete(void)
@@ -83,7 +89,8 @@ static bool frameIsComplete(void)
 
 static void markScoreCardForRoll(int pins)
 {
-    currentCard[getReportCardRollOffset()] = pinsToChar(pins);
+    scoreCardState.thisScore = pins;
+    currentCard[getReportCardRollOffset()] = pinsToChar(scoreCardState.thisScore);
 }
 
 static void resetCard(void)
@@ -109,16 +116,17 @@ static int getReportCardRollOffset()
     return offset;
 }
 
-static void markScoreCardForFrameResult(int pins)
+static void markScoreCardForFrameResult(void)
 {
-    int frameScore = pins + scoreCardState.lastResult;
+    int frameScore = scoreCardState.thisScore 
+        + scoreCardState.lastResult
+        + scoreCardState.lastFrameScore;
     currentCard[getReportCardFrameResultOffset()] = pinsToChar(frameScore);
 }
 
 static int getReportCardFrameResultOffset(void)
 {
-    int offset = sizeof(blankCard)/2;
-    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT + 1) * SIZE_OF_FRAME/2;
-
+    int offset = sizeof(blankCard)/2 + SIZE_OF_FRAME/2;
+    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT ) * SIZE_OF_FRAME;
     return offset;
 }
