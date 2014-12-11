@@ -9,7 +9,7 @@ static void expectedScoreCard(char* string);
 
 void setUp(void)
 {
-
+    SCRNG_Init();
 }
 
 void tearDown(void)
@@ -21,6 +21,7 @@ void test_drawEmptyScoreCard(void)
     char expectedString[] = 
 "|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|       |       |       |       |       |       |       |       |       |       |\n";
+    printf("\nBlank card");
     expectedScoreCard(expectedString);
 }
 
@@ -32,6 +33,7 @@ void test_drawShortGame(void)
     char expectedString[] = 
 "| 6 | 2 | 4 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |       |       |       |       |       |       |       |       |       |\n";
+    printf("\n6,2,4");
     expectedScoreCard(expectedString);
 
 }
@@ -39,6 +41,7 @@ void test_drawShortGame(void)
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);
+    printf("\n%s", scoreCard);
     TEST_ASSERT_MESSAGE( SAME_STRING == strcmp(score_ptr,string),
     "Did not get expected scorecard." );
 }
