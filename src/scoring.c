@@ -99,6 +99,8 @@ static void markScoreCardForFrameResult(void);
 static char pinsToChar(int val);
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
+static void scoreToString( char *writeTo , int score );
+
 
 /*
    _____ __________.___
@@ -192,7 +194,7 @@ static void markScoreCardForFrameResult(void)
     int frameScore = scoreCardState.thisRowScore 
         + scoreCardState.lastRowScore
         + scoreCardState.runningTotal;
-    currentCard[getReportCardFrameResultOffset()] = pinsToChar(frameScore);
+    scoreToString( &currentCard[getReportCardFrameResultOffset()] , frameScore );
 }
 
 static int getReportCardFrameResultOffset(void)
@@ -200,4 +202,19 @@ static int getReportCardFrameResultOffset(void)
     int offset = sizeof(blankCard)/2 + SIZE_OF_FRAME/2;
     offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT ) * SIZE_OF_FRAME;
     return offset;
+}
+
+static void scoreToString( char *writeTo , int score )
+{
+    if (score < 10)
+    {
+        *writeTo = pinsToChar(score);
+    }
+    else if (score < 100)
+    {
+        int tens = score/10;
+        int ones = score - tens * 10;
+        *(writeTo - 1) = pinsToChar(tens);
+        *writeTo = pinsToChar(ones);
+    }
 }
