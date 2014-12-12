@@ -206,14 +206,15 @@ static int getReportCardFrameResultOffset(void)
 
 static void scoreToString( char *writeTo , int score )
 {
+    int tens = score/10;
+    int ones = score - tens * 10;
+
     if (score < 10)
     {
-        *writeTo = pinsToChar(score);
+        *writeTo = pinsToChar(ones);
     }
     else if (score < 100)
     {
-        int tens = score/10;
-        int ones = score - tens * 10;
         *(writeTo - 1) = pinsToChar(tens);
         *writeTo = pinsToChar(ones);
     }
