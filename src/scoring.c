@@ -17,19 +17,23 @@ _________                _____.__
 "|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |"
 "|   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |"
 */
+
 #define SCORE_ROLL_SLOTS 20
 /*
 "| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |   |   |   |   |   |   |   |   |   |   |20 |"
 "|       |       |       |       |       |       |       |       |       |       |";
 */
+
 #define SIZE_OF_ROLL_SLOTS 4
 /*
 |   |   // <- last '|' belongs to the next row
 */
+
 #define SIZE_OF_FRAME 8
 /*
 |       |    // <- last '|' belongs to the next frame
 */
+
 
 /* 
 We have numbered everything above from 1 
@@ -37,6 +41,7 @@ We have numbered everything above from 1
 #define FIRST_ELEMENT 1 
 #define ROLL_FIRST_ELEMENT FIRST_ELEMENT
 #define FRAME_FIRST_ELEMENT FIRST_ELEMENT
+
 
 #define ROLLS_PER_FRAME 2
 /*
@@ -58,7 +63,7 @@ static struct tScoreCardState
     int rollInFrame;
     int frameNumber;
     int lastRowScore;
-    int lastFrameScore;
+    int runningTotal;
     int thisRowScore;
 }scoreCardState;
 
@@ -67,7 +72,7 @@ static const struct tScoreCardState cardInitState =
     .rollInFrame = ROLL_FIRST_ELEMENT,
     .frameNumber = FRAME_FIRST_ELEMENT,
     .lastRowScore = 0,
-    .lastFrameScore = 0,
+    .runningTotal = 0,
     .thisRowScore = 0
 };
 
@@ -143,7 +148,7 @@ static void progressToNextFrame(void)
     scoreCardState.frameNumber++;
     scoreCardState.rollInFrame = ROLL_FIRST_ELEMENT;
 
-    scoreCardState.lastFrameScore = 
+    scoreCardState.runningTotal += 
         scoreCardState.lastRowScore
         + scoreCardState.thisRowScore;
 }
@@ -186,7 +191,7 @@ static void markScoreCardForFrameResult(void)
 {
     int frameScore = scoreCardState.thisRowScore 
         + scoreCardState.lastRowScore
-        + scoreCardState.lastFrameScore;
+        + scoreCardState.runningTotal;
     currentCard[getReportCardFrameResultOffset()] = pinsToChar(frameScore);
 }
 

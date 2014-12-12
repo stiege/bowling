@@ -46,6 +46,17 @@ void test_RollSecondFrame(void)
     expectedScoreCard(expectedString);
 }
 
+void test_RollMisses(void)
+{
+    test_RollSecondFrame();
+    SCRNG_Roll(0);
+    SCRNG_Roll(0);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 | 0 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |       |       |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
+}
+
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);
