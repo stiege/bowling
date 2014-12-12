@@ -68,6 +68,17 @@ void test_RollIntoDoubleDigitScore(void)
     expectedScoreCard(expectedString);
 }
 
+void test_RollSpare(void)
+{
+    test_RollIntoDoubleDigitScore();
+    SCRNG_Roll(1);
+    SCRNG_Roll(9);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |       |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
+}
+
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);

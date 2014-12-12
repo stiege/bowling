@@ -65,6 +65,7 @@ static struct tScoreCardState
     int lastRowScore;
     int runningTotal;
     int thisRowScore;
+    bool frameIsSpare;
 }scoreCardState;
 
 static const struct tScoreCardState cardInitState = 
@@ -73,7 +74,8 @@ static const struct tScoreCardState cardInitState =
     .frameNumber = FRAME_FIRST_ELEMENT,
     .lastRowScore = 0,
     .runningTotal = 0,
-    .thisRowScore = 0
+    .thisRowScore = 0,
+    .frameIsSpare = false
 };
 
 static const char blankCard[] = 
@@ -96,10 +98,11 @@ static void progressToNextFrame(void);
 static bool frameIsComplete(void);
 static void markScoreCardForRoll(int);
 static void markScoreCardForFrameResult(void);
-static char pinsToChar(int val);
+static char pinsToChar();
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
 static void scoreToString( char *writeTo , int score );
+static char intToChar();
 
 
 /*
@@ -128,7 +131,10 @@ void SCRNG_Roll(int pins)
 
     if ( frameIsComplete() )
     {
-        markScoreCardForFrameResult();
+        if ( ! scoreCardState.frameIsSpare )
+        {
+            markScoreCardForFrameResult();
+        }
         progressToNextFrame();
     }
 
@@ -163,7 +169,7 @@ static bool frameIsComplete(void)
 static void markScoreCardForRoll(int pins)
 {
     scoreCardState.thisRowScore = pins;
-    currentCard[getReportCardRollOffset()] = pinsToChar(scoreCardState.thisRowScore);
+    currentCard[getReportCardRollOffset()] = pinsToChar();
 }
 
 static void resetCard(void)
@@ -174,9 +180,24 @@ static void resetCard(void)
 
 static char pinsToChar(int val)
 {
-    return (val + 0x30);
+    char writeOut = 0;
+    if (scoreCardState.thisRowScore + scoreCardState.lastRowScore == 10
+        && (scoreCardState.rollInFrame == 2))
+    {
+        writeOut = '/'; //spare
+        scoreCardState.frameIsSpare = true;
+    }
+    else
+    {
+        writeOut = intToChar(scoreCardState.thisRowScore);
+    }
+    return writeOut;
 }
 
+static char intToChar(int val)
+{
+    return (val + 0x30);
+}
 
 static int getReportCardRollOffset()
 {
@@ -211,11 +232,11 @@ static void scoreToString( char *writeTo , int score )
 
     if (score < 10)
     {
-        *writeTo = pinsToChar(ones);
+        *writeTo = intToChar(ones);
     }
     else if (score < 100)
     {
-        *(writeTo - 1) = pinsToChar(tens);
-        *writeTo = pinsToChar(ones);
+        *(writeTo - 1) = intToChar(tens);
+        *writeTo = intToChar(ones);
     }
 }
