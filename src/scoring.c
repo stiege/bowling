@@ -24,14 +24,15 @@ _________                _____.__
 "|       |       |       |       |       |       |       |       |       |       |";
 */
 
-#define SIZE_OF_ROLL_SLOTS 4
+#define SIZE_OF_ROLL_SLOTS ( sizeof("|   |") - sizeof("|") )
 /*
-|   |   // <- last '|' belongs to the next row
+The last '|' in " |   | " belongs to the next row.
+We're also implicitly subtracting the size of the termination character.
 */
 
-#define SIZE_OF_FRAME 8
+#define SIZE_OF_FRAME ( sizeof("|       |") - sizeof("|") )
 /*
-|       |    // <- last '|' belongs to the next frame
+The last '|' in  " |       | " belongs to the next frame
 */
 
 
@@ -43,7 +44,7 @@ We have numbered everything above from 1
 #define FRAME_FIRST_ELEMENT FIRST_ELEMENT
 
 
-#define ROLLS_PER_FRAME 2
+#define ROLLS_PER_FRAME ROLL_FIRST_ELEMENT + 1
 /*
 | 1 | 2 |
 |   1   |
@@ -65,7 +66,6 @@ static struct tScoreCardState
     int lastRowScore;
     int runningTotal;
     int thisRowScore;
-    bool frameIsSpare;
 }scoreCardState;
 
 static const struct tScoreCardState cardInitState = 
@@ -75,7 +75,6 @@ static const struct tScoreCardState cardInitState =
     .lastRowScore = 0,
     .runningTotal = 0,
     .thisRowScore = 0,
-    .frameIsSpare = false
 };
 
 static const char blankCard[] = 
@@ -103,6 +102,8 @@ static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(void);
 static void scoreToString( char *writeTo , int score );
 static char intToChar();
+static bool frameIsASpare(void);
+static void prepareForNextRoll(void);
 
 
 /*
@@ -127,18 +128,20 @@ void SCRNG_Roll(int pins)
 {
 
     markScoreCardForRoll(pins);
-    scoreCardState.rollInFrame++;
 
     if ( frameIsComplete() )
     {
-        if ( ! scoreCardState.frameIsSpare )
+        if ( ! frameIsASpare() )
         {
             markScoreCardForFrameResult();
         }
+
         progressToNextFrame();
     }
-
-    scoreCardState.lastRowScore = scoreCardState.thisRowScore;
+    else
+    {
+        prepareForNextRoll();
+    }
 
 }
 
@@ -163,7 +166,7 @@ static void progressToNextFrame(void)
 
 static bool frameIsComplete(void)
 {
-    return ( (ROLL_FIRST_ELEMENT + ROLLS_PER_FRAME) == scoreCardState.rollInFrame);
+    return ( ROLLS_PER_FRAME == scoreCardState.rollInFrame);
 }
 
 static void markScoreCardForRoll(int pins)
@@ -178,14 +181,12 @@ static void resetCard(void)
     sprintf(currentCard, "%s", blankCard);
 }
 
-static char pinsToChar(int val)
+static char pinsToChar()
 {
     char writeOut = 0;
-    if (scoreCardState.thisRowScore + scoreCardState.lastRowScore == 10
-        && (scoreCardState.rollInFrame == 2))
+    if ( frameIsASpare() )
     {
-        writeOut = '/'; //spare
-        scoreCardState.frameIsSpare = true;
+        writeOut = '/';
     }
     else
     {
@@ -197,6 +198,12 @@ static char pinsToChar(int val)
 static char intToChar(int val)
 {
     return (val + 0x30);
+}
+
+static bool frameIsASpare( void )
+{
+    return (scoreCardState.thisRowScore + scoreCardState.lastRowScore == 10
+        && (scoreCardState.rollInFrame == ROLLS_PER_FRAME));
 }
 
 static int getReportCardRollOffset()
@@ -239,4 +246,10 @@ static void scoreToString( char *writeTo , int score )
         *(writeTo - 1) = intToChar(tens);
         *writeTo = intToChar(ones);
     }
+}
+
+static void prepareForNextRoll(void)
+{
+    scoreCardState.rollInFrame++;
+    scoreCardState.lastRowScore = scoreCardState.thisRowScore;
 }
