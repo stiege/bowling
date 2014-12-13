@@ -24,12 +24,14 @@ void test_SimpleScoreCardWrite(void)
     SCRCRD_WriteRoll(1,2,3); //frame,roll,score
     SCRCRD_WriteRoll(2,1,3); //frame,roll,score
     SCRCRD_WriteSpare(3); //frame
+    SCRCRD_WriteStrike(6); //frame
     SCRCRD_WriteScoreForFrame(5,50); //frame, score
     char expectedString[] = 
-"|   | 3 | 3 |   |   | / |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   | 3 | 3 |   |   | / |   |   |   |   |   | X |   |   |   |   |   |   |   |   |\n"
 "|       |       |       |       |  50   |       |       |       |       |       |\n";
     expectedScoreCard(expectedString);
 }
+
 
 static void expectedScoreCard(char* string)
 {
