@@ -4,6 +4,6 @@
 #include "stdbool.h" //bool
 
 void FRMTNG_ScoreToString( char *writeTo , const int score );
-char FRMTNG_PinsToChar(int pins, bool isSpare);
+char FRMTNG_IntToChar(int val);
 
 #endif // formatting_H

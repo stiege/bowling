@@ -1,5 +1,5 @@
 #include "stdbool.h" //bool
-#include "stdio.h" //strings
+
 
 #include "game.h"
 #include "projectconfig.h"
@@ -18,17 +18,11 @@ ________          __           ________                .__
         \/     \/          \/          \/     \/     \/
 */
 
-static struct tGame gameState;
 
 static struct tBowlingFrame currentFrame;
 static struct tBowlingFrame previousFrame;
 
-static const char blankCard[] = 
-"|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|       |       |       |       |       |       |       |       |       |       |\n";
-
-static char currentCard[sizeof(blankCard)];
-
+static struct tGame gameState;
 
 static const struct tGame gameInitState = 
 {
@@ -45,13 +39,10 @@ __________                __
  |____|     |__|   \____/|__|  \____/____  >
                                          \/
 */
-static void resetCard(void);
-static void markScoreCardForRoll(int);
-static void markScoreCardForFrameResult(struct tBowlingFrame frame);
+static void markScoreCardForFrameResult(int frameNumber, struct tBowlingFrame frame);
+static void markScoreCardForRoll(int pins);
 static int getReportCardRollOffset(void);
 static int getReportCardFrameResultOffset(struct tBowlingFrame frame);
-
-static void markScoreCardForFrameResult(struct tBowlingFrame frame);
 
 /*
    _____ __________.___
@@ -62,14 +53,14 @@ static void markScoreCardForFrameResult(struct tBowlingFrame frame);
         \/
 */
 
-void GME_DrawScoreCard(char* scoreCard)
+void GME_DrawScoreCard(char *scoreCard)
 {
-    sprintf(scoreCard, "%s", currentCard);
+    SCRCRD_Print(scoreCard);
 }
 
 void GME_Init()
 {
-    resetCard();
+    SCRCRD_Init();
     gameState = gameInitState;
     BWLNGFRMS_Init(&currentFrame);
     BWLNGFRMS_Init(&previousFrame);
@@ -88,32 +79,32 @@ bool GME_FrameIsComplete(void)
     return ( ROLLS_PER_FRAME == gameState.rollInFrame);
 }
 
-void GME_SetFrameScore(struct tBowlingFrame* frame, int pins)
-{
-    switch (gameState.rollInFrame)
-    {
-        case 1:
-            frame->firstRowScore = pins;
-        break;
-        case 2:
-            frame->secondRowScore = pins;
-        default:
-        break;
-    }
-}
 
 void GME_CheckAndUpdatePreviousFrame(void)
 {
     if( BWLNGFRMS_FrameIsASpare(previousFrame) )
     {
         BWLNGFRMS_CalculateBonus(&previousFrame, currentFrame);
-        markScoreCardForFrameResult(previousFrame);
+        int totalScore = gameState.runningTotal + previousFrame.bonus;
+        SCRCRD_WriteScoreForFrame(gameState.frameNumber-1, totalScore);
     }
 }
 
 void GME_ProcessRoll(int pins)
 {
+    switch (gameState.rollInFrame)
+    {
+        case 1:
+            currentFrame.firstRowScore = pins;
+        break;
+        case 2:
+            currentFrame.secondRowScore = pins;
+        default:
+        break;
+    }
+
     markScoreCardForRoll(pins);
+
 }
 
 void GME_UpdateTotal(void)
@@ -128,7 +119,7 @@ bool GME_FrameScoreKnown(void)
 
 void GME_WriteFrameScore(void)
 {
-    markScoreCardForFrameResult(currentFrame);
+    markScoreCardForFrameResult(gameState.frameNumber, currentFrame);
 }
 
 void GME_NextRoll(void)
@@ -144,50 +135,25 @@ void GME_NextRoll(void)
        \/       \/     |__|        \/           \/
 */
 
-static void markScoreCardForFrameResult(struct tBowlingFrame frame)
+static void markScoreCardForFrameResult(int frameNumber, struct tBowlingFrame frame)
 {
     int totalScore = gameState.runningTotal + frame.bonus;
-    FRMTNG_ScoreToString( &currentCard[getReportCardFrameResultOffset(frame)] , totalScore );
+    SCRCRD_WriteScoreForFrame(frameNumber, totalScore);
+
 }
 
 static void markScoreCardForRoll(int pins)
 {
-    GME_SetFrameScore(&currentFrame, pins);
-
-    currentCard[getReportCardRollOffset()] = FRMTNG_PinsToChar(pins, BWLNGFRMS_FrameIsASpare(currentFrame));
-}
-
-static void resetCard(void)
-{
-    sprintf(currentCard, "%s", blankCard);
-}
-
-
-static int getReportCardRollOffset()
-{
-    int offset = SIZE_OF_ROLL_SLOTS / 2 ; //offset of first roll
-    //offset for additional roll
-    offset += (gameState.rollInFrame - ROLL_FIRST_ELEMENT) * SIZE_OF_ROLL_SLOTS;
-    //offset for frame
-    offset += (gameState.frameNumber - FRAME_FIRST_ELEMENT) * SIZE_OF_FRAME;
-
-    return offset;
-}
-
-static int getReportCardFrameResultOffset(struct tBowlingFrame frame)
-{
-    int offset = sizeof(blankCard)/2 + SIZE_OF_FRAME/2;
-    int targetFrame = gameState.frameNumber;
-
-    if ( BWLNGFRMS_FrameIsASpare(frame) )
+    if (BWLNGFRMS_FrameIsASpare(currentFrame) )
     {
-        /*
-        This frame was a spare so we're putting in its score halfway through
-        the frame after.
-        */
-        targetFrame -=1;
+        SCRCRD_WriteSpare(gameState.frameNumber);
     }
-    offset += (targetFrame - FRAME_FIRST_ELEMENT ) * SIZE_OF_FRAME;
-
-    return offset;
+    else
+    {
+        SCRCRD_WriteRoll(gameState.frameNumber, 
+            gameState.rollInFrame,
+            pins );
+    }
 }
+
+

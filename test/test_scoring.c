@@ -6,6 +6,7 @@
 #include "projectconfig.h"
 #include "game.h"
 #include "formatting.h"
+#include "scorecard.h"
 
 #define SAME_STRING 0
 
