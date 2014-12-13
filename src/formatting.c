@@ -1,6 +1,6 @@
 #include "formatting.h"
 
-void FRMTNG_ScoreToString( char *writeTo , const int score )
+void FRMTNG_ScoreToString( char *const writeTo , int score )
 {
     int tens = score/10;
     int ones = score - tens * 10;

@@ -3,7 +3,7 @@
 
 #include "stdbool.h" //bool
 
-void FRMTNG_ScoreToString( char *writeTo , const int score );
+void FRMTNG_ScoreToString( char *const writeTo , int score );
 char FRMTNG_IntToChar(int val);
 
 #endif // formatting_H

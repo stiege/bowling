@@ -10,12 +10,16 @@ struct tGame
     int rollInFrame;
 };
 
-void GME_Init(void);
+void GME_DrawScoreCard(char *scoreCard);
+void GME_Init();
 void GME_NextFrame(void);
 bool GME_FrameIsComplete(void);
+void GME_CheckAndUpdatePreviousFrame(void);
+void GME_ProcessRoll(int pins);
+void GME_UpdateTotal(void);
+bool GME_FrameScoreKnown(void);
+void GME_WriteFrameScore(void);
+void GME_NextRoll(void);
 
-void GME_SetFrameScore(struct tBowlingFrame* frame, int pins);
-bool GME_BonusAchievedLastRound(void);
-void GME_UpdatePreviousFrame(void);
 
 #endif // game_H
