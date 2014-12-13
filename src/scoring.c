@@ -93,7 +93,7 @@ __________                __
  |____|     |__|   \____/|__|  \____/____  >
                                          \/
 */
-
+static void updateRunningTotal(void);
 static void resetCard(void);
 static void progressToNextFrame(void);
 static bool frameIsComplete(void);
@@ -138,9 +138,7 @@ void SCRNG_Roll(int pins)
 
     if ( frameIsComplete() )
     {
-        gameState.runningTotal += 
-            currentFrame.secondRowScore
-            + currentFrame.firstRowScore;
+        updateRunningTotal();
 
         if ( ! BWLNGFRMS_FrameIsASpare(currentFrame) )
         {
@@ -164,6 +162,13 @@ void SCRNG_Roll(int pins)
  \___|_  /  \___  >____/   __/ \___  >__|  /____  >
        \/       \/     |__|        \/           \/
 */
+
+static void updateRunningTotal(void)
+{
+    gameState.runningTotal += 
+        currentFrame.secondRowScore
+        + currentFrame.firstRowScore;
+}
 
 static void progressToNextFrame(void)
 {
