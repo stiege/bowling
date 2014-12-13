@@ -11,7 +11,8 @@ static const struct tBowlingFrame frameInitState =
 
 bool BWLNGFRMS_FrameIsASpare( struct tBowlingFrame frame )
 {
-    return (frame.firstRowScore + frame.secondRowScore == 10);
+    return (frame.firstRowScore != 10 
+    && frame.firstRowScore + frame.secondRowScore == 10);
 }
 
 bool BWLNGFRMS_FrameIsAStrike( struct tBowlingFrame frame )

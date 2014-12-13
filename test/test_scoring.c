@@ -103,7 +103,7 @@ void test_RollAStrike(void)
     SCRNG_Roll(10);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 3 |   | X |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |  31   |  37   |       |       |       |       |\n";
+"|   8   |   9   |   9   |  18   |  31   |  34   |       |       |       |       |\n";
     expectedScoreCard(expectedString);
 }
 

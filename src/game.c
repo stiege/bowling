@@ -76,7 +76,8 @@ void GME_NextFrame(void)
 
 bool GME_FrameIsComplete(void)
 {
-    return ( ROLLS_PER_FRAME == gameState.rollInFrame);
+    return ( ROLLS_PER_FRAME == gameState.rollInFrame
+        || currentFrame.firstRowScore == 10);
 }
 
 
@@ -114,7 +115,9 @@ void GME_UpdateTotal(void)
 
 bool GME_FrameScoreKnown(void)
 {
-    return (! BWLNGFRMS_FrameIsASpare(currentFrame) );
+    return ( 
+        ! (BWLNGFRMS_FrameIsASpare(currentFrame) 
+        || BWLNGFRMS_FrameIsAStrike(currentFrame)) );
 }
 
 void GME_WriteFrameScore(void)
@@ -147,6 +150,10 @@ static void markScoreCardForRoll(int pins)
     if (BWLNGFRMS_FrameIsASpare(currentFrame) )
     {
         SCRCRD_WriteSpare(gameState.frameNumber);
+    }
+    else if (BWLNGFRMS_FrameIsAStrike(currentFrame))
+    {
+        SCRCRD_WriteStrike(gameState.frameNumber);
     }
     else
     {
