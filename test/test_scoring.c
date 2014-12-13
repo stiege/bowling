@@ -79,6 +79,16 @@ void test_RollSpare(void)
     expectedScoreCard(expectedString);
 }
 
+void test_CalculateSpare(void)
+{
+    test_RollSpare();
+    SCRNG_Roll(3);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |  31   |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
+}
+
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);

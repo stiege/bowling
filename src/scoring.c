@@ -59,22 +59,35 @@ ________          __           ________                .__
 /_______  (____  /__| (____  / /_______  /\___  >\___  >____/
         \/     \/          \/          \/     \/     \/
 */
-static struct tScoreCardState
+struct tFrameState 
 {
-    int rollInFrame;
-    int frameNumber;
-    int lastRowScore;
-    int runningTotal;
-    int thisRowScore;
-}scoreCardState;
+    int firstRowScore;
+    int secondRowScore;
+    int bonus;
+};
 
-static const struct tScoreCardState cardInitState = 
+static struct tFrameState currentFrame;
+static struct tFrameState previousFrame;
+
+static const struct tFrameState frameInitState = 
 {
-    .rollInFrame = ROLL_FIRST_ELEMENT,
-    .frameNumber = FRAME_FIRST_ELEMENT,
-    .lastRowScore = 0,
+    .firstRowScore = 0,
+    .secondRowScore = 0,
+    .bonus = 0,
+};
+
+static struct tGame
+{
+    int runningTotal;
+    int frameNumber;
+    int rollInFrame;
+}gameState;
+
+static const struct tGame gameInitState = 
+{
     .runningTotal = 0,
-    .thisRowScore = 0,
+    .frameNumber = FRAME_FIRST_ELEMENT,
+    .rollInFrame = ROLL_FIRST_ELEMENT
 };
 
 static const char blankCard[] = 
@@ -96,14 +109,15 @@ static void resetCard(void);
 static void progressToNextFrame(void);
 static bool frameIsComplete(void);
 static void markScoreCardForRoll(int);
-static void markScoreCardForFrameResult(void);
-static char pinsToChar();
+static void markScoreCardForFrameResult(struct tFrameState frame);
+static char pinsToChar(int pins);
 static int getReportCardRollOffset(void);
-static int getReportCardFrameResultOffset(void);
+static int getReportCardFrameResultOffset(struct tFrameState frame);
 static void scoreToString( char *writeTo , int score );
 static char intToChar();
-static bool frameIsASpare(void);
+static bool frameIsASpare( struct tFrameState frame );
 static void prepareForNextRoll(void);
+static void calculateBonus(void);
 
 
 /*
@@ -117,6 +131,9 @@ static void prepareForNextRoll(void);
 void SCRNG_Init( void )
 {
     resetCard();
+    gameState = gameInitState;
+    currentFrame = frameInitState;
+    previousFrame = frameInitState;
 }
 
 void SCRNG_DrawScoreCard( char* scoreCard )
@@ -129,11 +146,21 @@ void SCRNG_Roll(int pins)
 
     markScoreCardForRoll(pins);
 
+    if ( frameIsASpare(previousFrame) )
+    {
+        calculateBonus();
+        markScoreCardForFrameResult(previousFrame);
+    }
+
     if ( frameIsComplete() )
     {
-        if ( ! frameIsASpare() )
+        gameState.runningTotal += 
+            currentFrame.secondRowScore
+            + currentFrame.firstRowScore;
+
+        if ( ! frameIsASpare(currentFrame) )
         {
-            markScoreCardForFrameResult();
+            markScoreCardForFrameResult(currentFrame);
         }
 
         progressToNextFrame();
@@ -156,41 +183,50 @@ void SCRNG_Roll(int pins)
 
 static void progressToNextFrame(void)
 {
-    scoreCardState.frameNumber++;
-    scoreCardState.rollInFrame = ROLL_FIRST_ELEMENT;
+    previousFrame = currentFrame;
 
-    scoreCardState.runningTotal += 
-        scoreCardState.lastRowScore
-        + scoreCardState.thisRowScore;
+    gameState.frameNumber++;
+    gameState.rollInFrame = FRAME_FIRST_ELEMENT;
+
+    currentFrame = frameInitState;
+
 }
 
 static bool frameIsComplete(void)
 {
-    return ( ROLLS_PER_FRAME == scoreCardState.rollInFrame);
+    return ( ROLLS_PER_FRAME == gameState.rollInFrame);
 }
 
 static void markScoreCardForRoll(int pins)
 {
-    scoreCardState.thisRowScore = pins;
-    currentCard[getReportCardRollOffset()] = pinsToChar();
+    switch (gameState.rollInFrame)
+    {
+        case 1:
+            currentFrame.firstRowScore = pins;
+        break;
+        case 2:
+            currentFrame.secondRowScore = pins;
+        default:
+        break;
+    }
+    currentCard[getReportCardRollOffset()] = pinsToChar(pins);
 }
 
 static void resetCard(void)
 {
-    scoreCardState = cardInitState;
     sprintf(currentCard, "%s", blankCard);
 }
 
-static char pinsToChar()
+static char pinsToChar(int pins)
 {
     char writeOut = 0;
-    if ( frameIsASpare() )
+    if ( frameIsASpare(currentFrame) )
     {
         writeOut = '/';
     }
     else
     {
-        writeOut = intToChar(scoreCardState.thisRowScore);
+        writeOut = intToChar(pins);
     }
     return writeOut;
 }
@@ -200,35 +236,43 @@ static char intToChar(int val)
     return (val + 0x30);
 }
 
-static bool frameIsASpare( void )
+static bool frameIsASpare( struct tFrameState scoreCard )
 {
-    return (scoreCardState.thisRowScore + scoreCardState.lastRowScore == 10
-        && (scoreCardState.rollInFrame == ROLLS_PER_FRAME));
+    return (scoreCard.firstRowScore + scoreCard.secondRowScore == 10);
 }
 
 static int getReportCardRollOffset()
 {
     int offset = SIZE_OF_ROLL_SLOTS / 2 ; //offset of first roll
     //offset for additional roll
-    offset += (scoreCardState.rollInFrame - ROLL_FIRST_ELEMENT) * SIZE_OF_ROLL_SLOTS;
+    offset += (gameState.rollInFrame - ROLL_FIRST_ELEMENT) * SIZE_OF_ROLL_SLOTS;
     //offset for frame
-    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT) * SIZE_OF_FRAME;
+    offset += (gameState.frameNumber - FRAME_FIRST_ELEMENT) * SIZE_OF_FRAME;
 
     return offset;
 }
 
-static void markScoreCardForFrameResult(void)
+static void markScoreCardForFrameResult(struct tFrameState frame)
 {
-    int frameScore = scoreCardState.thisRowScore 
-        + scoreCardState.lastRowScore
-        + scoreCardState.runningTotal;
-    scoreToString( &currentCard[getReportCardFrameResultOffset()] , frameScore );
+    int totalScore = gameState.runningTotal + frame.bonus;
+    scoreToString( &currentCard[getReportCardFrameResultOffset(frame)] , totalScore );
 }
 
-static int getReportCardFrameResultOffset(void)
+static int getReportCardFrameResultOffset(struct tFrameState frame)
 {
     int offset = sizeof(blankCard)/2 + SIZE_OF_FRAME/2;
-    offset += (scoreCardState.frameNumber - FRAME_FIRST_ELEMENT ) * SIZE_OF_FRAME;
+    int targetFrame = gameState.frameNumber;
+
+    if ( frameIsASpare(frame) )
+    {
+        /*
+        This frame was a spare so we're putting in its score halfway through
+        the frame after.
+        */
+        targetFrame -=1;
+    }
+    offset += (targetFrame - FRAME_FIRST_ELEMENT ) * SIZE_OF_FRAME;
+
     return offset;
 }
 
@@ -250,6 +294,10 @@ static void scoreToString( char *writeTo , int score )
 
 static void prepareForNextRoll(void)
 {
-    scoreCardState.rollInFrame++;
-    scoreCardState.lastRowScore = scoreCardState.thisRowScore;
+    gameState.rollInFrame++;
+}
+
+static void calculateBonus(void)
+{
+    previousFrame.bonus = currentFrame.firstRowScore;
 }
