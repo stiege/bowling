@@ -64,7 +64,7 @@ void SCRCRD_WriteSpare(int frame)
 
 void SCRCRD_WriteStrike(int frame)
 {
-  
+    currentCard[getReportCardRollOffset(frame, ROLLS_PER_FRAME)] = 'X';
 }
 /*
   ___ ___         .__
