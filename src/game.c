@@ -83,11 +83,14 @@ bool GME_FrameIsComplete(void)
 
 void GME_CheckAndUpdatePreviousFrame(void)
 {
-    if( BWLNGFRMS_FrameIsASpare(previousFrame) 
-        || BWLNGFRMS_FrameIsAStrike(previousFrame))
+    if( 
+        BWLNGFRMS_FrameIsASpare(previousFrame) && gameState.rollInFrame == ROLL_FIRST_ELEMENT
+        || BWLNGFRMS_FrameIsAStrike(previousFrame) && gameState.rollInFrame == ROLLS_PER_FRAME
+        )
     {
         BWLNGFRMS_CalculateBonus(&previousFrame, currentFrame);
         int totalScore = gameState.runningTotal + previousFrame.bonus;
+        gameState.runningTotal += previousFrame.bonus;
         SCRCRD_WriteScoreForFrame(gameState.frameNumber-1, totalScore);
     }
 }
@@ -141,9 +144,7 @@ void GME_NextRoll(void)
 
 static void markScoreCardForFrameResult(int frameNumber, struct tBowlingFrame frame)
 {
-    int totalScore = gameState.runningTotal + frame.bonus;
-    SCRCRD_WriteScoreForFrame(frameNumber, totalScore);
-
+    SCRCRD_WriteScoreForFrame(frameNumber, gameState.runningTotal);
 }
 
 static void markScoreCardForRoll(int pins)

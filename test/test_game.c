@@ -41,31 +41,35 @@ void test_SimpleGame(void)
 
 }
 
-void test_Strike(void)
-{
-    const int frame = FRAME_FIRST_ELEMENT;
-    int roll = ROLL_FIRST_ELEMENT;
-    const int firstRollPins = 10;
+// void test_Strike(void)
+// {
+//     const int frame = FRAME_FIRST_ELEMENT;
+//     int roll = ROLL_FIRST_ELEMENT;
+//     const int firstRollPins = 10;
 
-    SCRCRD_WriteStrike_Expect(frame);
-    GME_ProcessRoll(firstRollPins);
+//     SCRCRD_WriteStrike_Expect(frame);
+//     GME_ProcessRoll(firstRollPins);
 
-    TEST_ASSERT( GME_FrameIsComplete() );
-    TEST_ASSERT( !GME_FrameScoreKnown() );
+//     TEST_ASSERT( GME_FrameIsComplete() );
+//     TEST_ASSERT( !GME_FrameScoreKnown() );
 
-    GME_NextFrame();
+//     GME_NextFrame();
 
-    SCRCRD_WriteRoll_Ignore();
-    GME_ProcessRoll(3);
-    SCRCRD_WriteRoll_Ignore();
-    GME_ProcessRoll(2);
+//     SCRCRD_WriteRoll_Ignore();
+//     GME_ProcessRoll(3);
 
-    SCRCRD_WriteScoreForFrame_Expect(1,15);
-    GME_CheckAndUpdatePreviousFrame();
+//     roll++;
+//     GME_NextRoll();
 
-    TEST_ASSERT( GME_FrameIsComplete() );
-    TEST_ASSERT( GME_FrameScoreKnown() );
+//     SCRCRD_WriteRoll_Ignore();
+//     GME_ProcessRoll(2);
 
-    SCRCRD_WriteScoreForFrame_Expect(2, 20);
-    GME_WriteFrameScore();
-}
+//     SCRCRD_WriteScoreForFrame_Expect(1,15);
+//     GME_CheckAndUpdatePreviousFrame();
+
+//     TEST_ASSERT( GME_FrameIsComplete() );
+//     TEST_ASSERT( GME_FrameScoreKnown() );
+
+//     SCRCRD_WriteScoreForFrame_Expect(2, 20);
+//     GME_WriteFrameScore();
+// }
