@@ -30,9 +30,21 @@ void test_computesStrike(void)
 
 void test_computesBonus(void)
 {
-    testFrame.secondRowScore = 8;
+
+    /*Spare bonus*/
+    testFramePrevious.firstRowScore = 2;
+    testFramePrevious.secondRowScore = 8;
     testFrame.firstRowScore = 2;
+    testFrame.secondRowScore = 3;
 
     BWLNGFRMS_CalculateBonus(&testFramePrevious, testFrame);
     TEST_ASSERT( testFramePrevious.bonus == testFrame.firstRowScore );
+
+    /*Strike bonus*/
+    testFramePrevious.firstRowScore = 10;
+    testFramePrevious.secondRowScore = 0;
+    testFrame.firstRowScore = 3;
+    testFrame.secondRowScore = 4;
+    BWLNGFRMS_CalculateBonus(&testFramePrevious, testFrame);
+    TEST_ASSERT( testFramePrevious.bonus == testFrame.firstRowScore + testFrame.secondRowScore);
 }
