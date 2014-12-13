@@ -17,6 +17,7 @@ void BWLNGFRMS_CalculateBonus(
     struct tBowlingFrame* previousFrame,
     struct tBowlingFrame currentFrame
     );
+int BWLNGFRMS_GetScore( struct tBowlingFrame frame );
 
 
 #endif // bowlingframes_H

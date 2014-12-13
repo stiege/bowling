@@ -26,3 +26,10 @@ void BWLNGFRMS_CalculateBonus(
 {
     previousFrame->bonus = currentFrame.firstRowScore;
 }
+
+int BWLNGFRMS_GetScore( struct tBowlingFrame frame )
+{
+    return (frame.firstRowScore
+        + frame.secondRowScore
+        + frame.bonus);
+}

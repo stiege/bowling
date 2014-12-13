@@ -1,9 +1,11 @@
 #include "unity.h"
-#include "scoring.h"
 #include "string.h"
+#include "scoring.h"
 
-#include "formatting.h"
 #include "bowlingframes.h"
+#include "projectconfig.h"
+#include "game.h"
+#include "formatting.h"
 
 #define SAME_STRING 0
 
