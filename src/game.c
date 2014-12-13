@@ -83,7 +83,8 @@ bool GME_FrameIsComplete(void)
 
 void GME_CheckAndUpdatePreviousFrame(void)
 {
-    if( BWLNGFRMS_FrameIsASpare(previousFrame) )
+    if( BWLNGFRMS_FrameIsASpare(previousFrame) 
+        || BWLNGFRMS_FrameIsAStrike(previousFrame))
     {
         BWLNGFRMS_CalculateBonus(&previousFrame, currentFrame);
         int totalScore = gameState.runningTotal + previousFrame.bonus;

@@ -53,6 +53,8 @@ void test_Strike(void)
     TEST_ASSERT( GME_FrameIsComplete() );
     TEST_ASSERT( !GME_FrameScoreKnown() );
 
+    GME_NextFrame();
+
     SCRCRD_WriteRoll_Ignore();
     GME_ProcessRoll(3);
     SCRCRD_WriteRoll_Ignore();
@@ -61,4 +63,9 @@ void test_Strike(void)
     SCRCRD_WriteScoreForFrame_Expect(1,15);
     GME_CheckAndUpdatePreviousFrame();
 
+    TEST_ASSERT( GME_FrameIsComplete() );
+    TEST_ASSERT( GME_FrameScoreKnown() );
+
+    SCRCRD_WriteScoreForFrame_Expect(2, 20);
+    GME_WriteFrameScore();
 }
