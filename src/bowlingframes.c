@@ -16,7 +16,7 @@ bool BWLNGFRMS_FrameIsASpare( struct tBowlingFrame frame )
 
 bool BWLNGFRMS_FrameIsAStrike( struct tBowlingFrame frame )
 {
-    return false;
+    return (frame.firstRowScore == 10);
 }
 
 void BWLNGFRMS_Init( struct tBowlingFrame* frame )

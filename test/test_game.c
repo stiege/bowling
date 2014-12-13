@@ -47,11 +47,10 @@ void test_Strike(void)
     int roll = ROLL_FIRST_ELEMENT;
     const int firstRollPins = 10;
 
-    SCRCRD_WriteRoll_Expect(frame,roll,firstRollPins);
+    SCRCRD_WriteStrike_Expect(frame);
     GME_ProcessRoll(firstRollPins);
 
     TEST_ASSERT( GME_FrameIsComplete() );
     TEST_ASSERT( !GME_FrameScoreKnown() );
 
-    roll++;
 }
