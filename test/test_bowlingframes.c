@@ -21,6 +21,13 @@ void test_computesSpare(void)
     TEST_ASSERT( BWLNGFRMS_FrameIsASpare(testFrame) );
 }
 
+void test_computesStrike(void)
+{
+    testFrame.firstRowScore = 10;
+    testFrame.secondRowScore = 0;
+    TEST_ASSERT( BWLNGFRMS_FrameIsAStrike(testFrame) );
+}
+
 void test_computesBonus(void)
 {
     testFrame.secondRowScore = 8;

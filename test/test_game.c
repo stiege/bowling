@@ -40,3 +40,18 @@ void test_SimpleGame(void)
     GME_WriteFrameScore();
 
 }
+
+void test_Strike(void)
+{
+    const int frame = FRAME_FIRST_ELEMENT;
+    int roll = ROLL_FIRST_ELEMENT;
+    const int firstRollPins = 10;
+
+    SCRCRD_WriteRoll_Expect(frame,roll,firstRollPins);
+    GME_ProcessRoll(firstRollPins);
+
+    TEST_ASSERT( GME_FrameIsComplete() );
+    TEST_ASSERT( !GME_FrameScoreKnown() );
+
+    roll++;
+}
