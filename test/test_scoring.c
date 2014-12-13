@@ -107,16 +107,16 @@ void test_RollAStrike(void)
     expectedScoreCard(expectedString);
 }
 
-// void test_ComputeStrike(void)
-// {
-//     test_RollAStrike();
-//     SCRNG_Roll(3);
-//     SCRNG_Roll(4);
-//     char expectedString[] = 
-// "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 3 |   | X | 3 | 4 |   |   |   |   |\n"
-// "|   8   |   9   |   9   |  18   |  31   |  37   |  50   |  57   |       |       |\n";
-//     expectedScoreCard(expectedString);
-// }
+void test_ComputeStrike(void)
+{
+    test_RollAStrike();
+    SCRNG_Roll(3);
+    SCRNG_Roll(4);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |       |       |\n";
+    expectedScoreCard(expectedString);
+}
 
 static void expectedScoreCard(char* string)
 {
