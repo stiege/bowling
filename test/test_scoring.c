@@ -1,6 +1,10 @@
 #include "unity.h"
 #include "scoring.h"
 #include "string.h"
+
+#include "formatting.h"
+#include "bowlingframes.h"
+
 #define SAME_STRING 0
 
 char scoreCard[200] = {0};
