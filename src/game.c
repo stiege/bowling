@@ -93,8 +93,7 @@ void GME_CheckAndUpdatePreviousFrame(void)
 {
     BWLNGFRMS_CalculateBonus(&priorPreviousFrame, &previousFrame, currentFrame);
     
-    if ( BWLNGFRMS_FrameIsAStrike(priorPreviousFrame)
-        && BWLNGFRMS_FrameIsAStrike(previousFrame)
+    if ( BWLNGFRMS_ContextMultiStrike(&priorPreviousFrame , &previousFrame)
         && gameState.rollInFrame == ROLL_FIRST_ELEMENT)
     {
         gameState.runningTotal += priorPreviousFrame.bonus;
@@ -105,18 +104,15 @@ void GME_CheckAndUpdatePreviousFrame(void)
         );
     }
 
-    if (BWLNGFRMS_FrameIsAStrike(previousFrame) 
-        && ! BWLNGFRMS_FrameIsAStrike(currentFrame)
+    if (BWLNGFRMS_ContextSingleStrike(&previousFrame, &currentFrame) 
         && gameState.rollInFrame == ROLLS_PER_FRAME )
     {
         gameState.runningTotal += previousFrame.bonus;
         SCRCRD_WriteScoreForFrame(gameState.frameNumber - 1, gameState.runningTotal);
     }
 
-    if( 
-        BWLNGFRMS_FrameIsASpare(previousFrame) 
-        && gameState.rollInFrame == ROLL_FIRST_ELEMENT
-        )
+    else if( BWLNGFRMS_ContextSpare(&previousFrame) 
+            && gameState.rollInFrame == ROLL_FIRST_ELEMENT)
     {
         gameState.runningTotal += previousFrame.bonus;
         SCRCRD_WriteScoreForFrame(gameState.frameNumber - 1, gameState.runningTotal);
@@ -162,6 +158,7 @@ void GME_NextRoll(void)
 {
     gameState.rollInFrame++;
 }
+
 /*
   ___ ___         .__
  /   |   \   ____ |  | ______   ___________  ______

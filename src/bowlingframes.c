@@ -20,20 +20,6 @@ static const struct tBowlingFrame frameInitState =
 };
 
 /*
-__________                __
-\______   \_______  _____/  |_  ____  ______
- |     ___/\_  __ \/  _ \   __\/  _ \/  ___/
- |    |     |  | \(  <_> )  | (  <_> )___ \
- |____|     |__|   \____/|__|  \____/____  >
-                                         \/
-*/
-static bool contextMultiStrike(struct tBowlingFrame* priorPreviousFrame,
-    struct tBowlingFrame* previousFrame);
-static bool contextSingleStrike(struct tBowlingFrame* priorPreviousFrame,
-    struct tBowlingFrame* previousFrame);
-static bool contextSpare(struct tBowlingFrame* previousFrame);
-
-/*
    _____ __________.___
   /  _  \\______   \   |
  /  /_\  \|     ___/   |
@@ -65,28 +51,28 @@ void BWLNGFRMS_CalculateBonus(
     )
 {
 
-    if ( contextSingleStrike(priorPreviousFrame, previousFrame) )
+    if ( BWLNGFRMS_ContextSingleStrike(priorPreviousFrame, previousFrame) )
     {
         priorPreviousFrame->bonus = 
         previousFrame->firstRowScore
         + previousFrame->secondRowScore;
     }
 
-    else if ( contextMultiStrike(priorPreviousFrame, previousFrame) )
+    else if ( BWLNGFRMS_ContextMultiStrike(priorPreviousFrame, previousFrame) )
     {
         priorPreviousFrame->bonus = 
         previousFrame->firstRowScore
         + currentFrame.firstRowScore;
     }
     
-    if (contextSingleStrike(previousFrame, &currentFrame) )
+    if (BWLNGFRMS_ContextSingleStrike(previousFrame, &currentFrame) )
     {
         previousFrame->bonus =
             currentFrame.firstRowScore
             + currentFrame.secondRowScore;
     }
 
-    else if ( contextSpare(previousFrame) )
+    else if ( BWLNGFRMS_ContextSpare(previousFrame) )
     {
         previousFrame->bonus = currentFrame.firstRowScore;
     }
@@ -100,30 +86,21 @@ int BWLNGFRMS_GetScore( struct tBowlingFrame frame )
         + frame.bonus);
 }
 
-/*
-  ___ ___         .__
- /   |   \   ____ |  | ______   ___________  ______
-/    ~    \_/ __ \|  | \____ \_/ __ \_  __ \/  ___/
-\    Y    /\  ___/|  |_|  |_> >  ___/|  | \/\___ \
- \___|_  /  \___  >____/   __/ \___  >__|  /____  >
-       \/       \/     |__|        \/           \/
-*/
-
-static bool contextMultiStrike(struct tBowlingFrame* priorPreviousFrame,
+bool BWLNGFRMS_ContextMultiStrike(struct tBowlingFrame* priorPreviousFrame,
     struct tBowlingFrame* previousFrame)
 {
     return (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
         && BWLNGFRMS_FrameIsAStrike(*previousFrame));
 }
 
-static bool contextSingleStrike(struct tBowlingFrame* priorPreviousFrame,
+bool BWLNGFRMS_ContextSingleStrike(struct tBowlingFrame* priorPreviousFrame,
     struct tBowlingFrame* previousFrame)
 {
     return (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
         && ! BWLNGFRMS_FrameIsAStrike(*previousFrame));
 }
 
-static bool contextSpare(struct tBowlingFrame* previousFrame)
+bool BWLNGFRMS_ContextSpare(struct tBowlingFrame* previousFrame)
 {
     return BWLNGFRMS_FrameIsASpare(*previousFrame);
 }
