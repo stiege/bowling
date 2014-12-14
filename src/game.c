@@ -42,8 +42,6 @@ __________                __
 */
 static void markScoreCardForFrameResult(int frameNumber, struct tBowlingFrame frame);
 static void markScoreCardForRoll(int pins);
-static int getReportCardRollOffset(void);
-static int getReportCardFrameResultOffset(struct tBowlingFrame frame);
 
 /*
    _____ __________.___
@@ -86,16 +84,37 @@ bool GME_FrameIsComplete(void)
 
 void GME_CheckAndUpdatePreviousFrame(void)
 {
+    BWLNGFRMS_CalculateBonus(&priorPreviousFrame, &previousFrame, currentFrame);
+    
+    if ( BWLNGFRMS_FrameIsAStrike(priorPreviousFrame)
+        && BWLNGFRMS_FrameIsAStrike(previousFrame)
+        && gameState.rollInFrame == ROLL_FIRST_ELEMENT)
+    {
+        gameState.runningTotal += priorPreviousFrame.bonus;
+        SCRCRD_WriteScoreForFrame(
+            gameState.frameNumber-2, 
+            gameState.runningTotal
+            - previousFrame.firstRowScore
+        );
+    }
+
+    if (BWLNGFRMS_FrameIsAStrike(previousFrame) 
+        && ! BWLNGFRMS_FrameIsAStrike(currentFrame)
+        && gameState.rollInFrame == ROLLS_PER_FRAME )
+    {
+        gameState.runningTotal += previousFrame.bonus;
+        SCRCRD_WriteScoreForFrame(gameState.frameNumber - 1, gameState.runningTotal);
+    }
+
     if( 
-        BWLNGFRMS_FrameIsASpare(previousFrame) && gameState.rollInFrame == ROLL_FIRST_ELEMENT
-        || BWLNGFRMS_FrameIsAStrike(previousFrame) && gameState.rollInFrame == ROLLS_PER_FRAME
+        BWLNGFRMS_FrameIsASpare(previousFrame) 
+        && gameState.rollInFrame == ROLL_FIRST_ELEMENT
         )
     {
-        BWLNGFRMS_CalculateBonus(&priorPreviousFrame, &previousFrame, currentFrame);
-        int totalScore = gameState.runningTotal + previousFrame.bonus;
         gameState.runningTotal += previousFrame.bonus;
-        SCRCRD_WriteScoreForFrame(gameState.frameNumber-1, totalScore);
+        SCRCRD_WriteScoreForFrame(gameState.frameNumber - 1, gameState.runningTotal);
     }
+
 }
 
 void GME_ProcessRoll(int pins)

@@ -39,7 +39,7 @@ void BWLNGFRMS_CalculateBonus(
         previousFrame->firstRowScore
         + previousFrame->secondRowScore;
     }
-    else if (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
+    if (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
         && BWLNGFRMS_FrameIsAStrike(*previousFrame))
     {
         priorPreviousFrame->bonus = 
@@ -54,7 +54,7 @@ void BWLNGFRMS_CalculateBonus(
             currentFrame.firstRowScore
             + currentFrame.secondRowScore;
     }
-    else if (BWLNGFRMS_FrameIsASpare(*previousFrame) )
+    if (BWLNGFRMS_FrameIsASpare(*previousFrame) )
     {
         previousFrame->bonus = currentFrame.firstRowScore;
     }
