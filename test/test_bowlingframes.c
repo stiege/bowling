@@ -16,19 +16,19 @@ void tearDown(void)
 {
 }
 
-// void test_computesSpare(void)
-// {
-//     testFrame.firstRowScore = 2;
-//     testFrame.secondRowScore = 8;
-//     TEST_ASSERT( BWLNGFRMS_FrameIsASpare(testFrame) );
-// }
+void test_computesSpare(void)
+{
+    testFrame.firstRowScore = 2;
+    testFrame.secondRowScore = 8;
+    TEST_ASSERT( BWLNGFRMS_FrameIsASpare(testFrame) );
+}
 
-// void test_computesStrike(void)
-// {
-//     testFrame.firstRowScore = 10;
-//     testFrame.secondRowScore = 0;
-//     TEST_ASSERT( BWLNGFRMS_FrameIsAStrike(testFrame) );
-// }
+void test_computesStrike(void)
+{
+    testFrame.firstRowScore = 10;
+    testFrame.secondRowScore = 0;
+    TEST_ASSERT( BWLNGFRMS_FrameIsAStrike(testFrame) );
+}
 
 void test_computesBonus(void)
 {
