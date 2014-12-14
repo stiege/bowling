@@ -118,6 +118,19 @@ void test_ComputeStrike(void)
     expectedScoreCard(expectedString);
 }
 
+void test_MultipleStrikes(void)
+{
+    SCRNG_Roll(10);
+    SCRNG_Roll(10);
+    SCRNG_Roll(10);
+    SCRNG_Roll(2);
+    SCRNG_Roll(3);
+    char expectedString[] = 
+"|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|  30   |  52   |  67   |  72   |       |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
+}
+
 static void expectedScoreCard(char* string)
 {
     SCRNG_DrawScoreCard(score_ptr);

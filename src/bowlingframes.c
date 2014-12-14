@@ -26,6 +26,7 @@ void BWLNGFRMS_Init( struct tBowlingFrame* frame )
 }
 
 void BWLNGFRMS_CalculateBonus(
+    struct tBowlingFrame* priorPreviousFrame,
     struct tBowlingFrame* previousFrame,
     struct tBowlingFrame currentFrame
     )

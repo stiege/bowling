@@ -3,11 +3,13 @@
 
 struct tBowlingFrame testFrame;
 struct tBowlingFrame testFramePrevious;
+struct tBowlingFrame testFramePriorPrevious;
 
 void setUp(void)
 {
     BWLNGFRMS_Init(&testFrame);
     BWLNGFRMS_Init(&testFramePrevious);
+    BWLNGFRMS_Init(&testFramePriorPrevious);
 }
 
 void tearDown(void)
@@ -37,7 +39,7 @@ void test_computesBonus(void)
     testFrame.firstRowScore = 2;
     testFrame.secondRowScore = 3;
 
-    BWLNGFRMS_CalculateBonus(&testFramePrevious, testFrame);
+    BWLNGFRMS_CalculateBonus(&testFramePriorPrevious,&testFramePrevious, testFrame);
     TEST_ASSERT( testFramePrevious.bonus == testFrame.firstRowScore );
 
     /*Strike bonus*/
@@ -45,6 +47,17 @@ void test_computesBonus(void)
     testFramePrevious.secondRowScore = 0;
     testFrame.firstRowScore = 3;
     testFrame.secondRowScore = 4;
-    BWLNGFRMS_CalculateBonus(&testFramePrevious, testFrame);
+    BWLNGFRMS_CalculateBonus(&testFramePriorPrevious,&testFramePrevious, testFrame);
     TEST_ASSERT( testFramePrevious.bonus == testFrame.firstRowScore + testFrame.secondRowScore);
+
+    /*Double strike bonus*/
+    testFramePriorPrevious.firstRowScore = 10;
+    testFramePriorPrevious.secondRowScore = 0;
+    testFramePrevious.firstRowScore = 10;
+    testFramePrevious.secondRowScore = 0;
+    testFrame.firstRowScore = 2;
+    testFrame.secondRowScore = 3;
+    BWLNGFRMS_CalculateBonus(&testFramePriorPrevious, &testFramePrevious, testFrame);
+    TEST_ASSERT( testFramePriorPrevious.bonus == 12);
+    TEST_ASSERT( testFramePrevious.bonus == 5);
 }

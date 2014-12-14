@@ -15,6 +15,7 @@ void BWLNGFRMS_Init(struct tBowlingFrame* frame);
 bool BWLNGFRMS_FrameIsASpare( struct tBowlingFrame frame );
 bool BWLNGFRMS_FrameIsAStrike( struct tBowlingFrame frame );
 void BWLNGFRMS_CalculateBonus(
+    struct tBowlingFrame* priorPreviousFrame,
     struct tBowlingFrame* previousFrame,
     struct tBowlingFrame currentFrame
     );

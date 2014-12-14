@@ -21,6 +21,7 @@ ________          __           ________                .__
 
 static struct tBowlingFrame currentFrame;
 static struct tBowlingFrame previousFrame;
+static struct tBowlingFrame priorPreviousFrame;
 
 static struct tGame gameState;
 
@@ -64,10 +65,12 @@ void GME_Init()
     gameState = gameInitState;
     BWLNGFRMS_Init(&currentFrame);
     BWLNGFRMS_Init(&previousFrame);
+    BWLNGFRMS_Init(&priorPreviousFrame);
 }
 
 void GME_NextFrame(void)
 {
+    priorPreviousFrame = previousFrame;
     previousFrame = currentFrame;
     gameState.frameNumber++;
     gameState.rollInFrame = FRAME_FIRST_ELEMENT;
@@ -88,7 +91,7 @@ void GME_CheckAndUpdatePreviousFrame(void)
         || BWLNGFRMS_FrameIsAStrike(previousFrame) && gameState.rollInFrame == ROLLS_PER_FRAME
         )
     {
-        BWLNGFRMS_CalculateBonus(&previousFrame, currentFrame);
+        BWLNGFRMS_CalculateBonus(&priorPreviousFrame, &previousFrame, currentFrame);
         int totalScore = gameState.runningTotal + previousFrame.bonus;
         gameState.runningTotal += previousFrame.bonus;
         SCRCRD_WriteScoreForFrame(gameState.frameNumber-1, totalScore);
