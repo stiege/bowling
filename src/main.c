@@ -1,7 +1,6 @@
 #include "main.h"
 #include "stdbool.h" //bool
 
-#include "projectconfig.h"
 #include "game.h"
 
 

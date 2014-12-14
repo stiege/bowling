@@ -1,7 +1,7 @@
 #include "scorecard.h"
+#include "stdio.h" //strings
 
 #include "projectconfig.h"
-#include "stdio.h" //strings
 
 /*
 ________          __           ________                .__

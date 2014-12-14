@@ -1,12 +1,10 @@
+#include "game.h"
 #include "stdbool.h" //bool
 
-
-#include "game.h"
 #include "projectconfig.h"
-
 #include "bowlingframes.h"
+#include "scorecard.h"
 
-#include "formatting.h"
 
 
 /*

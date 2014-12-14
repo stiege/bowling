@@ -1,7 +1,7 @@
 #ifndef game_H
 #define game_H
 
-#include "bowlingframes.h"
+#include "stdbool.h"
 
 void GME_DrawScoreCard(char *scoreCard);
 void GME_Init();
