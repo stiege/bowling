@@ -1,4 +1,4 @@
-#include "scoring.h"
+#include "main.h"
 #include "stdbool.h" //bool
 
 #include "projectconfig.h"
@@ -14,17 +14,17 @@
 \____|__  /____|   |___|
         \/
 */
-void SCRNG_Init( void )
+void MAIN_Init( void )
 {
     GME_Init();
 }
 
-void SCRNG_DrawScoreCard( char* scoreCard )
+void MAIN_DrawScoreCard( char* scoreCard )
 {
     GME_DrawScoreCard(scoreCard);
 }
 
-void SCRNG_Roll(int pins)
+void MAIN_Roll(int pins)
 {
 
     GME_ProcessRoll(pins);

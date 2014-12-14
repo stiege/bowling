@@ -1,6 +1,6 @@
 #include "unity.h"
 #include "string.h"
-#include "scoring.h"
+#include "main.h"
 
 #include "bowlingframes.h"
 #include "projectconfig.h"
@@ -16,7 +16,7 @@ static void expectedScoreCard(char* string);
 
 void setUp(void)
 {
-    SCRNG_Init();
+    MAIN_Init();
 }
 
 void tearDown(void)
@@ -33,9 +33,9 @@ void test_drawEmptyScoreCard(void)
 
 void test_drawShortGame(void)
 {
-    SCRNG_Roll(6);
-    SCRNG_Roll(2);
-    SCRNG_Roll(1);
+    MAIN_Roll(6);
+    MAIN_Roll(2);
+    MAIN_Roll(1);
     char expectedString[] = 
 "| 6 | 2 | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |       |       |       |       |       |       |       |       |       |\n";
@@ -46,7 +46,7 @@ void test_drawShortGame(void)
 void test_RollSecondFrame(void)
 {
     test_drawShortGame();
-    SCRNG_Roll(0);
+    MAIN_Roll(0);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |   9   |       |       |       |       |       |       |       |       |\n";
@@ -56,8 +56,8 @@ void test_RollSecondFrame(void)
 void test_RollMisses(void)
 {
     test_RollSecondFrame();
-    SCRNG_Roll(0);
-    SCRNG_Roll(0);
+    MAIN_Roll(0);
+    MAIN_Roll(0);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |   9   |   9   |       |       |       |       |       |       |       |\n";
@@ -67,8 +67,8 @@ void test_RollMisses(void)
 void test_RollIntoDoubleDigitScore(void)
 {
     test_RollMisses();
-    SCRNG_Roll(1);
-    SCRNG_Roll(8);
+    MAIN_Roll(1);
+    MAIN_Roll(8);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |   9   |   9   |  18   |       |       |       |       |       |       |\n";
@@ -78,8 +78,8 @@ void test_RollIntoDoubleDigitScore(void)
 void test_RollSpare(void)
 {
     test_RollIntoDoubleDigitScore();
-    SCRNG_Roll(1);
-    SCRNG_Roll(9);
+    MAIN_Roll(1);
+    MAIN_Roll(9);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / |   |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |   9   |   9   |  18   |       |       |       |       |       |       |\n";
@@ -89,7 +89,7 @@ void test_RollSpare(void)
 void test_CalculateSpare(void)
 {
     test_RollSpare();
-    SCRNG_Roll(3);
+    MAIN_Roll(3);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 |   |   |   |   |   |   |   |   |   |\n"
 "|   8   |   9   |   9   |  18   |  31   |       |       |       |       |       |\n";
@@ -99,8 +99,8 @@ void test_CalculateSpare(void)
 void test_RollAStrike(void)
 {
     test_CalculateSpare();
-    SCRNG_Roll(4);
-    SCRNG_Roll(10);
+    MAIN_Roll(4);
+    MAIN_Roll(10);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X |   |   |   |   |   |   |\n"
 "|   8   |   9   |   9   |  18   |  31   |  38   |       |       |       |       |\n";
@@ -110,8 +110,8 @@ void test_RollAStrike(void)
 void test_ComputeStrike(void)
 {
     test_RollAStrike();
-    SCRNG_Roll(3);
-    SCRNG_Roll(4);
+    MAIN_Roll(3);
+    MAIN_Roll(4);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   |   |   |   |\n"
 "|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |       |       |\n";
@@ -121,9 +121,9 @@ void test_ComputeStrike(void)
 void test_FinishGame(void)
 {
     test_ComputeStrike();
-    SCRNG_Roll(10);
-    SCRNG_Roll(2);
-    SCRNG_Roll(3);
+    MAIN_Roll(10);
+    MAIN_Roll(2);
+    MAIN_Roll(3);
     char expectedString[] = 
 "| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   | X | 2 | 3 |\n"
 "|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |  77   |  82   |\n";
@@ -132,11 +132,11 @@ void test_FinishGame(void)
 
 void test_MultipleStrikes(void)
 {
-    SCRNG_Roll(10);
-    SCRNG_Roll(10);
-    SCRNG_Roll(10);
-    SCRNG_Roll(2);
-    SCRNG_Roll(3);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(2);
+    MAIN_Roll(3);
     char expectedString[] = 
 "|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
 "|  30   |  52   |  67   |  72   |       |       |       |       |       |       |\n";
@@ -145,7 +145,7 @@ void test_MultipleStrikes(void)
 
 static void expectedScoreCard(char* string)
 {
-    SCRNG_DrawScoreCard(score_ptr);
+    MAIN_DrawScoreCard(score_ptr);
     if (SAME_STRING != strcmp(score_ptr,string))
     {
         char failMessage[2 * sizeof(scoreCard)];
