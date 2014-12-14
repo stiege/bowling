@@ -118,6 +118,18 @@ void test_ComputeStrike(void)
     expectedScoreCard(expectedString);
 }
 
+void test_FinishGame(void)
+{
+    test_ComputeStrike();
+    SCRNG_Roll(10);
+    SCRNG_Roll(2);
+    SCRNG_Roll(3);
+    char expectedString[] = 
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   | X | 2 | 3 |\n"
+"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |  77   |  82   |\n";
+    expectedScoreCard(expectedString);
+}
+
 void test_MultipleStrikes(void)
 {
     SCRNG_Roll(10);
