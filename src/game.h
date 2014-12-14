@@ -3,13 +3,6 @@
 
 #include "bowlingframes.h"
 
-struct tGame
-{
-    int runningTotal;
-    int frameNumber;
-    int rollInFrame;
-};
-
 void GME_DrawScoreCard(char *scoreCard);
 void GME_Init();
 void GME_NextFrame(void);

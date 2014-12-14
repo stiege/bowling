@@ -23,6 +23,13 @@ static struct tBowlingFrame currentFrame;
 static struct tBowlingFrame previousFrame;
 static struct tBowlingFrame priorPreviousFrame;
 
+struct tGame
+{
+    int runningTotal;
+    int frameNumber;
+    int rollInFrame;
+};
+
 static struct tGame gameState;
 
 static const struct tGame gameInitState = 
