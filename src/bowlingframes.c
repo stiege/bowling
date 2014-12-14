@@ -31,20 +31,34 @@ void BWLNGFRMS_CalculateBonus(
     struct tBowlingFrame currentFrame
     )
 {
-    if (previousFrame->firstRowScore == 10)
+
+    if (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
+        && ! BWLNGFRMS_FrameIsAStrike(*previousFrame) )
+    {
+        priorPreviousFrame->bonus = 
+        previousFrame->firstRowScore
+        + previousFrame->secondRowScore;
+    }
+    else if (BWLNGFRMS_FrameIsAStrike(*priorPreviousFrame)
+        && BWLNGFRMS_FrameIsAStrike(*previousFrame))
+    {
+        priorPreviousFrame->bonus = 
+        previousFrame->firstRowScore
+        + currentFrame.firstRowScore;
+    }
+
+    if (BWLNGFRMS_FrameIsAStrike(*previousFrame) 
+        && !BWLNGFRMS_FrameIsAStrike(currentFrame) )
     {
         previousFrame->bonus =
             currentFrame.firstRowScore
             + currentFrame.secondRowScore;
     }
-    else if (previousFrame->firstRowScore + previousFrame->secondRowScore == 10)
+    else if (BWLNGFRMS_FrameIsASpare(*previousFrame) )
     {
         previousFrame->bonus = currentFrame.firstRowScore;
     }
-    else
-    {
-        previousFrame->bonus = 0;
-    }
+
 }
 
 int BWLNGFRMS_GetScore( struct tBowlingFrame frame )
