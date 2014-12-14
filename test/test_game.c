@@ -78,3 +78,39 @@ void test_Strike(void)
     GME_WriteFrameScore();
 
 }
+
+void test_MultiStriks(void)
+{
+    int frame = FRAME_FIRST_ELEMENT;
+
+    /*strike*/
+    SCRCRD_WriteStrike_Expect(frame++);
+    GME_ProcessRoll(10);
+    TEST_ASSERT( GME_FrameIsComplete() );
+    GME_UpdateTotal();
+    GME_NextFrame();
+
+    /*2nd strike*/
+    SCRCRD_WriteStrike_Expect(frame++);
+    GME_ProcessRoll(10);
+    TEST_ASSERT( GME_FrameIsComplete() );
+    GME_UpdateTotal();
+    GME_NextFrame();
+
+    /*frame 3, first roll*/
+    SCRCRD_WriteRoll_Ignore();
+    GME_ProcessRoll(2);
+
+    /*First strike score is now known*/
+    SCRCRD_WriteScoreForFrame_Expect(1,22);
+    GME_CheckAndUpdatePreviousFrame();
+
+    /*frame 3, second roll*/
+    GME_NextRoll();
+    GME_ProcessRoll(2);
+
+    /*Second strike score is now known*/
+    SCRCRD_WriteScoreForFrame_Expect(2,36);
+    GME_CheckAndUpdatePreviousFrame();
+
+}
