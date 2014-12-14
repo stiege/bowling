@@ -25,7 +25,8 @@ _________                _____.__
 #define SIZE_OF_ROLL_SLOTS ( sizeof("|   |") - sizeof("|") )
 /*
 The last '|' in " |   | " belongs to the next row.
-We're also implicitly subtracting the size of the termination character.
+We're also implicitly subtracting the size of the termination character
+(but it was implicitly added to begin with).
 */
 
 #define SIZE_OF_FRAME ( sizeof("|       |") - sizeof("|") )
