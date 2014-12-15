@@ -143,6 +143,23 @@ void test_MultipleStrikes(void)
     expectedScoreCard(expectedString);
 }
 
+void test_HighScore(void)
+{
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(10);
+    MAIN_Roll(2);
+    MAIN_Roll(3);
+    char expectedString[] = 
+"|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|  30   |  52   |  67   |  72   |       |       |       |       |       |       |\n";
+    expectedScoreCard(expectedString);
+}
+
 static void expectedScoreCard(char* string)
 {
     MAIN_DrawScoreCard(score_ptr);
