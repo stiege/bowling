@@ -29,8 +29,8 @@ void test_SimpleScoreCardWrite(void)
     SCRCRD_WriteStrike(6); //frame
     SCRCRD_WriteScoreForFrame(5,50); //frame, score
     char expectedString[] = 
-"|   | 3 | 3 |   |   | / |   |   |   |   |   | X |   |   |   |   |   |   |   |   |\n"
-"|       |       |       |       |  50   |       |       |       |       |       |\n";
+"|   | 3 | 3 |   |   | / |   |   |   |   |   | X |   |   |   |   |   |   |   |   |   |\n"
+"|       |       |       |       |  50   |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 

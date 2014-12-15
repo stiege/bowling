@@ -26,8 +26,8 @@ void tearDown(void)
 void test_drawEmptyScoreCard(void)
 {
     char expectedString[] = 
-"|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|       |       |       |       |       |       |       |       |       |       |\n";
+"|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|       |       |       |       |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -37,8 +37,8 @@ void test_drawShortGame(void)
     MAIN_Roll(2);
     MAIN_Roll(1);
     char expectedString[] = 
-"| 6 | 2 | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |       |       |       |       |       |       |       |       |       |\n";
+"| 6 | 2 | 1 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |       |       |       |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 
 }
@@ -48,8 +48,8 @@ void test_RollSecondFrame(void)
     test_drawShortGame();
     MAIN_Roll(0);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |   9   |       |       |       |       |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |       |       |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -59,8 +59,8 @@ void test_RollMisses(void)
     MAIN_Roll(0);
     MAIN_Roll(0);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |       |       |       |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |       |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -70,8 +70,8 @@ void test_RollIntoDoubleDigitScore(void)
     MAIN_Roll(1);
     MAIN_Roll(8);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |       |       |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -81,8 +81,8 @@ void test_RollSpare(void)
     MAIN_Roll(1);
     MAIN_Roll(9);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / |   |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |       |       |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -91,8 +91,8 @@ void test_CalculateSpare(void)
     test_RollSpare();
     MAIN_Roll(3);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 |   |   |   |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |  31   |       |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 |   |   |   |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |  31   |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -102,8 +102,8 @@ void test_RollAStrike(void)
     MAIN_Roll(4);
     MAIN_Roll(10);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X |   |   |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |  31   |  38   |       |       |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X |   |   |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |  31   |  38   |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -113,8 +113,8 @@ void test_ComputeStrike(void)
     MAIN_Roll(3);
     MAIN_Roll(4);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   |   |   |   |\n"
-"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |       |       |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   |   |   |   |   |\n"
+"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -125,8 +125,8 @@ void test_FinishGame(void)
     MAIN_Roll(2);
     MAIN_Roll(3);
     char expectedString[] = 
-"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   | X | 2 | 3 |\n"
-"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |  77   |  82   |\n";
+"| 6 | 2 | 1 | 0 | 0 | 0 | 1 | 8 | 1 | / | 3 | 4 |   | X | 3 | 4 |   | X | 2 | 3 | 0 |\n"
+"|   8   |   9   |   9   |  18   |  31   |  38   |  55   |  62   |  77   |    82     |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -138,8 +138,8 @@ void test_MultipleStrikes(void)
     MAIN_Roll(2);
     MAIN_Roll(3);
     char expectedString[] = 
-"|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|  30   |  52   |  67   |  72   |       |       |       |       |       |       |\n";
+"|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|  30   |  52   |  67   |  72   |       |       |       |       |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
@@ -155,8 +155,8 @@ void test_HighScore(void)
     MAIN_Roll(2);
     MAIN_Roll(3);
     char expectedString[] = 
-"|   | X |   | X |   | X |   | X |   | X |   | X |   | X | 2 | 3 |   |   |   |   |\n"
-"|  30   |  60   |  90   |  120  |  150  |  172  |  187  |  192  |       |       |\n";
+"|   | X |   | X |   | X |   | X |   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |\n"
+"|  30   |  60   |  90   |  120  |  150  |  172  |  187  |  192  |       |           |\n";
     expectedScoreCard(expectedString);
 }
 
