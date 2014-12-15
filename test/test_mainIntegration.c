@@ -155,8 +155,8 @@ void test_HighScore(void)
     MAIN_Roll(2);
     MAIN_Roll(3);
     char expectedString[] = 
-"|   | X |   | X |   | X | 2 | 3 |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|  30   |  52   |  67   |  72   |       |       |       |       |       |       |\n";
+"|   | X |   | X |   | X |   | X |   | X |   | X |   | X | 2 | 3 |   |   |   |   |\n"
+"|  30   |  60   |  90   |  120  |  150  |  172  |  187  |  192  |       |       |\n";
     expectedScoreCard(expectedString);
 }
 
