@@ -12,8 +12,8 @@ ________          __           ________                .__
         \/     \/          \/          \/     \/     \/
 */
 static const char blankCard[] = 
-"|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
-"|       |       |       |       |       |       |       |       |       |       |\n";
+"|   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |\n"
+"|       |       |       |       |       |       |       |       |       |           |\n";
 
 static char currentCard[sizeof(blankCard)];
 
